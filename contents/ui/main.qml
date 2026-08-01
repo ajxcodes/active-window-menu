@@ -152,6 +152,8 @@ PlasmoidItem {
     KSvg.FrameSvgItem {
         id: frame
         anchors.fill: parent
+        anchors.leftMargin: -cfg.highlightBleed
+        anchors.rightMargin: -cfg.highlightBleed
         visible: root.macAppMenuPopup.status === PlasmaExtras.Menu.Open || root.itemHovered
         imagePath: "widgets/menubaritem"
         prefix: {
