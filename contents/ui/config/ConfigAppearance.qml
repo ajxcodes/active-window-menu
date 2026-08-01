@@ -13,6 +13,7 @@ Kirigami.ScrollablePage {
     id: root
     readonly property alias cfg_firstSpace: firstSpace.value
     readonly property alias cfg_useNativeMargins: useNativeMarginsChk.checked
+    readonly property alias cfg_highlightBleed: highlightBleed.value
     readonly property alias cfg_midSpace: midSpace.value
     readonly property alias cfg_lastSpace: lastSpace.value
     readonly property alias cfg_txt: txt.text
@@ -201,6 +202,12 @@ Kirigami.ScrollablePage {
             visible: useNativeMarginsChk.checked
             wrapMode: Text.WordWrap
             Layout.maximumWidth: 300
+        }
+        PC3.SpinBox {
+            id: highlightBleed
+            Kirigami.FormData.label: i18n("Highlight bleed (expand background):")
+            from: -50
+            to: 50
         }
         PC3.SpinBox {
             id: firstSpace
