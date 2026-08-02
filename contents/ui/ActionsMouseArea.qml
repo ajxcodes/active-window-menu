@@ -36,14 +36,12 @@ MouseArea {
         }
     }
 
-    HoverHandler {
-        id: hoverHandler
-    }
+    hoverEnabled: true
 
     Binding {
         target: root
         property: "itemHovered"
-        value: hoverHandler.hovered
+        value: actionsArea.containsMouse
     }
 
     Binding {
