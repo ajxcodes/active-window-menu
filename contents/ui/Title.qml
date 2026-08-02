@@ -53,6 +53,7 @@ GridLayout {
             id                      : label
             verticalAlignment       : Text.AlignVCenter
             text                    : root.text
+            textFormat              : Text.PlainText
             color                   : Kirigami.Theme.textColor
             elide                   : Tools.getElide(cfg.elidePos)
             width : {
