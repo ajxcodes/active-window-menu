@@ -1,0 +1,54 @@
+name: Auto Tag on PR Merge
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'metadata.json'
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for tags
+          token: ${{ secrets.PAT }}
+
+      - name: Extract Version from metadata.json
+        id: get_version
+        run: |
+          VERSION=$(grep -oP '"Version": "\K[^"]+' metadata.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "Extracted version: $VERSION"
+
+      - name: Compare Version with Latest Tag
+        id: check_version
+        run: |
+          # Get the latest tag sorted by version
+          LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+          if [ -z "$LATEST_TAG" ]; then LATEST_TAG="v0.0.0"; fi
+          echo "Latest tag is: $LATEST_TAG"
+          
+          # Use sort -V to find the highest version
+          HIGHEST=$(printf '%s\n%s' "${{ env.VERSION }}" "$LATEST_TAG" | sort -V | tail -n 1)
+          
+          if [ "${{ env.VERSION }}" != "$LATEST_TAG" ] && [ "$HIGHEST" = "${{ env.VERSION }}" ]; then
+            echo "Version ${{ env.VERSION }} is strictly higher than $LATEST_TAG."
+            echo "higher=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version ${{ env.VERSION }} is NOT higher than $LATEST_TAG."
+            echo "higher=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and Push Tag
+        if: steps.check_version.outputs.higher == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
