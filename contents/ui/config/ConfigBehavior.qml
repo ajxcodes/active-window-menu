@@ -12,46 +12,78 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_filterByMaximized: filterByMaximizedChk.checked
     readonly property alias cfg_showTooltip: showTooltipChk.checked
     readonly property alias cfg_maxminAllowed: maxminAllowed.checked
-    readonly property alias cfg_closeAllowed: closeAllowed.checked
     readonly property alias cfg_scrollAllowed: scrollAllowed.checked
-    readonly property alias cfg_leftClickMenu: leftClickMenu.checked
+    readonly property alias cfg_forceQuitConfirm: forceQuitConfirm.checked
+    readonly property alias cfg_leftClickAction: leftClickAction.currentIndex
+    readonly property alias cfg_middleClickAction: middleClickAction.currentIndex
 
     Kirigami.FormLayout {
-        Kirigami.Separator {
+        Item {
             Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: "Info Filtering"
+            Kirigami.FormData.label: i18n("Window Tracking")
         }
-        PC3.CheckBox{
+
+        PC3.Switch {
             id: filterByScreenChk
             Kirigami.FormData.label: i18n("Show only from current screen:")
         }
-        PC3.CheckBox{
+        PC3.Switch {
             id: filterByMaximizedChk
             Kirigami.FormData.label: i18n("Show only when maximized:")
         }
-        Kirigami.Separator {
+
+        Item {
             Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: "Gestures"
+            Kirigami.FormData.label: i18n("Mouse Clicks")
         }
-        PC3.CheckBox{
-            id: showTooltipChk
-            Kirigami.FormData.label: i18n("Show tooltip on hover:")
+
+        PC3.ComboBox {
+            id: leftClickAction
+            Kirigami.FormData.label: i18n("Left-Click Action:")
+            model: [
+                i18n("Open Context Menu"),
+                i18n("Show App Window"),
+                i18n("Do Nothing")
+            ]
         }
-        PC3.CheckBox{
-            id: leftClickMenu
-            Kirigami.FormData.label: i18n("Left-Click opens Context Menu:")
+
+        PC3.ComboBox {
+            id: middleClickAction
+            Kirigami.FormData.label: i18n("Middle-Click Action:")
+            model: [
+                i18n("Close Window"),
+                i18n("Do Nothing")
+            ]
         }
-        PC3.CheckBox{
+
+        PC3.Switch {
             id: maxminAllowed
             Kirigami.FormData.label: i18n("Double-Click to maximize/minimize:")
         }
-        PC3.CheckBox{
-            id: closeAllowed
-            Kirigami.FormData.label: i18n("Middle-Click to close:")
+
+        Item {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: i18n("Hover & Scrolling")
         }
-        PC3.CheckBox{
+
+        PC3.Switch {
+            id: showTooltipChk
+            Kirigami.FormData.label: i18n("Show tooltip on hover:")
+        }
+
+        PC3.Switch {
             id: scrollAllowed
             Kirigami.FormData.label: i18n("Scroll through tasks:")
+        }
+
+        Item {
+            Kirigami.FormData.isSection: true
+            Kirigami.FormData.label: i18n("Advanced")
+        }
+
+        PC3.Switch {
+            id: forceQuitConfirm
+            Kirigami.FormData.label: i18n("Confirm Force Quit:")
         }
     }
 }
