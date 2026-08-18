@@ -3,6 +3,10 @@
     "KPlugin": {
         "Authors": [
             {
+                "Email": "[EMAIL_ADDRESS]",
+                "Name": "Psifidotos"
+            },
+            {
                 "Email": "dhruv8sh@proton.me",
                 "Name": "Dhruvesh Surolia"
             },
@@ -19,14 +23,18 @@
                 "Name": "NotAlexNoyle"
             }
         ],
+        "BugReportUrl": "https://github.com/ajxcodes/active-window-menu/issues",
         "Category": "Windows and Tasks",
         "Description": "Shows the application title and icon of the active window with a Mac-like context menu",
+        "Donors": [
+            "https://github.com/sponsors/ajxcodes"
+        ],
         "Icon": "preferences-desktop",
-        "Id": "com.ajxcodes.macappmenu",
+        "Id": "com.ajxcodes.active-window-menu",
         "License": "GPLv2",
-        "Name": "Mac Title Menu",
-        "Version": "v0.12.5",
-        "Website": "https://github.com/ajxcodes/mac-title-menu"
+        "Name": "Active Window Menu",
+        "Version": "v1.00.0",
+        "Website": "https://github.com/ajxcodes/active-window-menu"
     },
     "Keyword": "window title icon mac menu",
     "X-Plasma-API-Minimum-Version": "6.0"
