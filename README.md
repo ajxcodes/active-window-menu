@@ -1,6 +1,11 @@
-# Mac Title Menu
+# Active Window Menu
 <p align="center">
-  <img src="./mac_title_menu_logo.png" width="250" alt="Mac Title Menu Logo">
+  <img src="./active-window-menu.png" width="250" alt="Active Window Menu Logo">
+</p>
+<p align="center">
+  <a href="https://store.kde.org/p/2362989/">
+    <img src="https://img.shields.io/badge/KDE_Store-Install-0072C6?logo=kde&logoColor=white&style=for-the-badge" alt="Install from KDE Store">
+  </a>
 </p>
 
 A Mac-like window title and context menu applet built natively for KDE Plasma 6.
@@ -27,21 +32,28 @@ This project was heavily refactored and expanded from the fantastic foundational
 ## Images
 <div align="center">
 <p>
-<img src="./combined_screenshots.png" alt="Hover State Themes" width="600"/>
+<img src="./preview1_panels.png" alt="Panels" width="600"/>
 <br/>
 <i>Hover states across different Plasma themes</i>
 <br/><br/>
 </p>
 
 <p>
-<img src="./combined_pressed_screenshots.png" alt="Pressed State Themes" width="600"/>
+<img src="./preview2_menu.png" alt="Menu" width="600"/>
 <br/>
-<i>Pressed states across different Plasma themes</i>
+<i>Context menu with window management actions</i>
 <br/><br/>
 </p>
 
 <p>
-<img src="./combined_settings_screenshots.png" alt="Settings Configuration" width="800"/>
+<img src="./preview3_about.png" alt="About" width="600"/>
+<br/>
+<i>About page</i>
+<br/><br/>
+</p>
+
+<p>
+<img src="./preview4_settings.png" alt="Settings Configuration" width="800"/>
 <br/>
 <i>Applet Settings (Appearance, Behavior, Substitutions, Keyboard Shortcuts)</i>
 <br/><br/>
@@ -49,14 +61,16 @@ This project was heavily refactored and expanded from the fantastic foundational
 
 </div>
 
-
 ## Installation
 
 ### Via KDE Store (Recommended)
 You can easily install this directly through your Plasma Desktop:
 1. Right-click your panel and select **Add Widgets...**
 2. Click **Get New Widgets...**
-3. Search for **Mac Title Menu** and hit install!
+3. Search for **Active Window Menu** and hit install!
+
+Alternatively, if you are viewing this on a system with KDE Discover installed, you can use an AppStream link (if you have your store ID):
+[Install via Discover](appstream://com.ajxcodes.macappmenu) or [View on KDE Store](https://store.kde.org/p/2362989/)
 
 ### Manual Installation
 If you've cloned this repository, you can easily install and test it using the provided script:
