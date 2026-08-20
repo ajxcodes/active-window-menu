@@ -9,23 +9,40 @@ def find_keywords(item_tuple, found_about, found_prefs, about_id, prefs_id, pref
     label = str(properties.get("label", "")).lower()
     icon_name = str(properties.get("icon-name", "")).lower()
     
-    # Strip accelerators like &About
-    clean_label = label.replace("&", "").replace("_", "")
+    # Strip accelerators and dots
+    clean_label = label.replace("&", "").replace("_", "").replace(".", "").strip()
     
-    # Check for About
-    if not found_about and ("about" in clean_label or "about" in icon_name):
-        found_about = True
-        about_id = item_id
-        
-    # Check for Preferences / Settings
-    if not found_prefs and ("preferences" in clean_label or "settings" in clean_label or "preferences" in icon_name or "settings" in icon_name):
-        found_prefs = True
-        prefs_id = item_id
-        # Capitalize for the menu (Preferences vs Settings)
-        if "setting" in clean_label or "setting" in icon_name:
-            prefs_label = "Settings"
-        else:
-            prefs_label = "Preferences"
+    is_leaf = len(children) == 0 and str(properties.get("children-display", "")) != "submenu"
+    
+    if is_leaf:
+        # Check for About
+        if not found_about and (clean_label.startswith("about ") or clean_label == "about"):
+            found_about = True
+            about_id = item_id
+            
+        # Check for Preferences / Settings
+        if not found_prefs:
+            exclusions = ["printer", "page", "shortcut", "toolbar", "notification", "event", "plugin", "extension"]
+            if not any(excl in clean_label for excl in exclusions):
+                if ("preferences" in clean_label or 
+                    "settings" in clean_label or 
+                    "options" in clean_label or 
+                    clean_label.startswith("configure ") or
+                    clean_label == "configure" or
+                    "preferences" in icon_name or 
+                    "configure" in icon_name):
+                    
+                    found_prefs = True
+                    prefs_id = item_id
+                    
+                    if "setting" in clean_label or "setting" in icon_name:
+                        prefs_label = "Settings"
+                    elif "configure" in clean_label or "configure" in icon_name:
+                        prefs_label = "Configure"
+                    elif "options" in clean_label:
+                        prefs_label = "Options"
+                    else:
+                        prefs_label = "Preferences"
 
     for child in children:
         # If we found both, we can stop traversing early
