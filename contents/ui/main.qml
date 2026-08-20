@@ -35,7 +35,6 @@ PlasmoidItem {
         aboutWindow.targetAppPid = root.activeTaskItem ? root.activeTaskItem.modelAppPid : "";
         aboutWindow.targetGenericName = root.activeTaskItem ? root.activeTaskItem.modelGenericName : "";
         aboutWindow.targetTitle = root.text;
-        aboutWindow.targetIcon = root.icon;
         aboutWindow.visible = true;
         aboutWindow.requestActivate();
     }
@@ -62,6 +61,29 @@ PlasmoidItem {
     property Item activeTaskItem:                   windowInfoLoader.item.activeTaskItem
     property var icon:                              Tools.getIcon()
     property string text:                           Tools.getText()
+    
+    property bool currentAppHasPrefs:               false
+    property string currentAppPrefsLabel:           ""
+    property var menuCapabilitiesCache:             ({})
+    
+    onActiveTaskItemChanged: {
+        currentAppHasPrefs = false;
+        currentAppPrefsLabel = "";
+        
+        var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
+        var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";
+        var cacheKey = service + "|" + path;
+        
+        if (service !== "" && path !== "") {
+            if (menuCapabilitiesCache[cacheKey] !== undefined) {
+                root.currentAppHasPrefs = menuCapabilitiesCache[cacheKey].has_prefs;
+                root.currentAppPrefsLabel = menuCapabilitiesCache[cacheKey].prefs_label;
+            } else {
+                var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
+                dbusMenuCheckSource.connectSource('python3 ' + scriptPath + ' check ' + service + ' ' + path);
+            }
+        }
+    }
     states: [
         State{
             name: "editMode"
@@ -186,8 +208,8 @@ PlasmoidItem {
                 if (service !== "" && path !== "") {
                     // Try using the DBus Python Script
                     // Note: plasmoid.file is avoided here because it can fail to resolve during plasmoid updates.
-                    var scriptPath = Qt.resolvedUrl("../scripts/trigger_about.py").toString().replace("file://", "");
-                    dbusTriggerSource.connectSource('python3 ' + scriptPath + ' ' + service + ' ' + path);
+                    var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
+                    dbusTriggerSource.connectSource('python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' about');
                 } else {
                     // Fallback instantly if no DBus AppMenu is available
                     aboutWindow.targetAppName = root.activeTaskItem ? root.activeTaskItem.appName : "Mac Title Menu";
@@ -195,12 +217,43 @@ PlasmoidItem {
                     aboutWindow.targetAppPid = root.activeTaskItem ? root.activeTaskItem.modelAppPid : "";
                     aboutWindow.targetGenericName = root.activeTaskItem ? root.activeTaskItem.modelGenericName : "";
                     aboutWindow.targetTitle = root.text;
-                    aboutWindow.targetIcon = root.icon;
                     aboutWindow.visible = true;
                     aboutWindow.requestActivate();
                 }
             })
         }
+        
+        PlasmaExtras.MenuItem {
+            text: i18n("%1...", root.currentAppPrefsLabel)
+            visible: root.currentAppHasPrefs
+            onClicked: Qt.callLater(function(){
+                var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
+                var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";
+                if (service !== "" && path !== "") {
+                    var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
+                    dbusTriggerSource.connectSource('python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' prefs');
+                }
+            })
+        }
+
+        PlasmaExtras.MenuItem {
+            text: i18n("Force Quit")
+            icon: "application-exit"
+            visible: root.activeTaskItem && root.activeTaskItem.modelAppPid !== ""
+            onClicked: Qt.callLater(function(){
+                if (existsWindowActive) {
+                    if (cfg.forceQuitConfirm) {
+                        forceQuitWindow.targetAppName = root.activeTaskItem.appName;
+                        forceQuitWindow.targetAppPid = root.activeTaskItem.modelAppPid;
+                        forceQuitWindow.visible = true;
+                        forceQuitWindow.requestActivate();
+                    } else {
+                        killDataSource.connectSource('sh -c "kill -15 ' + root.activeTaskItem.modelAppPid + ' 2>/dev/null; sleep 1; kill -9 ' + root.activeTaskItem.modelAppPid + ' 2>/dev/null"');
+                    }
+                }
+            })
+        }
+        
         PlasmaExtras.MenuItem { separator: true }
 
         PlasmaExtras.MenuItem {
@@ -234,6 +287,7 @@ PlasmoidItem {
 
         PlasmaExtras.MenuItem {
             text: i18n("Close")
+            icon: "window-close"
             onClicked: Qt.callLater(function(){
                 if(existsWindowActive) windowInfoLoader.item.requestClose();
             })
@@ -269,18 +323,126 @@ PlasmoidItem {
         engine: "executable"
         connectedSources: []
         onNewData: (sourceName, data) => {
-            if (sourceName.indexOf("trigger_about.py") === -1) return;
+            if (sourceName.indexOf("dbus_menu_helper.py trigger") === -1) return;
             
             var output = (data.stdout || "").trim();
             if (output === "SUCCESS") {
                 disconnectSource(sourceName);
             } else if (output === "NOT_FOUND" || output === "ERROR") {
                 disconnectSource(sourceName);
-                root.showFallbackAboutWindow();
+                if (sourceName.indexOf("about") !== -1) {
+                    aboutWindow.targetAppName = root.activeTaskItem ? root.activeTaskItem.appName : "Mac Title Menu";
+                    aboutWindow.targetAppId = root.activeTaskItem ? root.activeTaskItem.modelAppId : "";
+                    aboutWindow.targetAppPid = root.activeTaskItem ? root.activeTaskItem.modelAppPid : "";
+                    aboutWindow.targetGenericName = root.activeTaskItem ? root.activeTaskItem.modelGenericName : "";
+                    aboutWindow.targetTitle = root.text;
+                    root.showFallbackAboutWindow();
+                }
             } else if (data["exit code"] !== undefined || data.exitCode !== undefined) {
-                // Process exited without finding the about menu
                 disconnectSource(sourceName);
-                root.showFallbackAboutWindow();
+                if (sourceName.indexOf("about") !== -1) {
+                    aboutWindow.targetAppName = root.activeTaskItem ? root.activeTaskItem.appName : "Mac Title Menu";
+                    aboutWindow.targetAppId = root.activeTaskItem ? root.activeTaskItem.modelAppId : "";
+                    aboutWindow.targetAppPid = root.activeTaskItem ? root.activeTaskItem.modelAppPid : "";
+                    aboutWindow.targetGenericName = root.activeTaskItem ? root.activeTaskItem.modelGenericName : "";
+                    aboutWindow.targetTitle = root.text;
+                    root.showFallbackAboutWindow();
+                }
+            }
+        }
+    }
+
+    Plasma5Support.DataSource {
+        id: dbusMenuCheckSource
+        engine: "executable"
+        connectedSources: []
+        onNewData: (sourceName, data) => {
+            if (sourceName.indexOf("dbus_menu_helper.py check") === -1) return;
+            
+            var output = (data.stdout || "").trim();
+            if (output !== "") {
+                try {
+                    var parsed = JSON.parse(output);
+                    var parts = sourceName.split(' ');
+                    var service = parts[parts.length - 2];
+                    var path = parts[parts.length - 1];
+                    var cacheKey = service + "|" + path;
+                    
+                    root.menuCapabilitiesCache[cacheKey] = {
+                        has_prefs: parsed.has_prefs === true,
+                        prefs_label: parsed.prefs_label || "Preferences"
+                    };
+                    
+                    // If this is still the active window, apply it immediately
+                    if (root.activeTaskItem && 
+                        root.activeTaskItem.dbusAppMenuServiceName === service &&
+                        root.activeTaskItem.dbusAppMenuObjectPath === path) {
+                        root.currentAppHasPrefs = root.menuCapabilitiesCache[cacheKey].has_prefs;
+                        root.currentAppPrefsLabel = root.menuCapabilitiesCache[cacheKey].prefs_label;
+                    }
+                } catch (e) {
+                    console.log("Failed to parse dbus_menu_helper check output:", e);
+                }
+            }
+            if (data["exit code"] !== undefined || data.exitCode !== undefined) {
+                disconnectSource(sourceName);
+            }
+        }
+    }
+
+    Plasma5Support.DataSource {
+        id: killDataSource
+        engine: "executable"
+        connectedSources: []
+        onNewData: (sourceName, data) => { disconnectSource(sourceName); }
+    }
+
+    Window {
+        id: forceQuitWindow
+        
+        property string targetAppName: ""
+        property string targetAppPid: ""
+        
+        title: i18n("Force Quit %1", targetAppName)
+        width: Kirigami.Units.gridUnit * 20
+        height: fqLayout.implicitHeight + Kirigami.Units.largeSpacing * 2
+        x: Screen.width / 2 - width / 2
+        y: Screen.height / 2 - height / 2
+        color: Kirigami.Theme.backgroundColor
+        flags: Qt.Dialog | Qt.WindowCloseButtonHint | Qt.WindowTitleHint
+
+        onActiveChanged: {
+            if (visible && !active) {
+                visible = false;
+            }
+        }
+
+        ColumnLayout {
+            id: fqLayout
+            anchors.fill: parent
+            anchors.margins: Kirigami.Units.largeSpacing
+            spacing: Kirigami.Units.largeSpacing
+            
+            PlasmaComponents.Label {
+                text: i18n("Are you sure you want to force quit %1?\nAny unsaved changes will be lost.", forceQuitWindow.targetAppName)
+                wrapMode: Text.Wrap
+                Layout.fillWidth: true
+            }
+            RowLayout {
+                Layout.alignment: Qt.AlignRight
+                PlasmaComponents.Button {
+                    text: i18n("Cancel")
+                    onClicked: forceQuitWindow.visible = false
+                }
+                PlasmaComponents.Button {
+                    text: i18n("Force Quit")
+                    icon.name: "application-exit"
+                    onClicked: {
+                        killDataSource.connectSource('sh -c "kill -15 ' + forceQuitWindow.targetAppPid + ' 2>/dev/null; sleep 1; kill -9 ' + forceQuitWindow.targetAppPid + ' 2>/dev/null"');
+                        forceQuitWindow.visible = false;
+                        aboutWindow.visible = false;
+                    }
+                }
             }
         }
     }
@@ -293,7 +455,6 @@ PlasmoidItem {
         property string targetAppPid: ""
         property string targetGenericName: ""
         property string targetTitle: ""
-        property var targetIcon: ""
 
         title: i18n("About %1", targetAppName)
         width: Kirigami.Units.gridUnit * 22
@@ -312,8 +473,6 @@ PlasmoidItem {
         
         onActiveChanged: {
             if (visible && !active) {
-                // Auto-close on focus loss.
-                // Note: The onVisibleChanged handler below safely triggers the recentlyClosedAbout timer to prevent race conditions.
                 visible = false;
             }
         }
@@ -328,7 +487,7 @@ PlasmoidItem {
                 Layout.alignment: Qt.AlignHCenter
                 Layout.preferredWidth: Kirigami.Units.iconSizes.huge
                 Layout.preferredHeight: Kirigami.Units.iconSizes.huge
-                source: aboutWindow.targetIcon
+                source: root.icon
             }
 
             PlasmaComponents.Label {
@@ -389,10 +548,41 @@ PlasmoidItem {
 
             Item { Layout.fillHeight: true } // Spacer
 
-            PlasmaComponents.Button {
+            RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                text: i18n("Close")
-                onClicked: aboutWindow.visible = false
+                spacing: Kirigami.Units.largeSpacing
+
+                PlasmaComponents.Button {
+                    text: i18n("App Settings")
+                    icon.name: "settings-configure"
+                    visible: aboutWindow.targetAppId !== "" && aboutWindow.targetAppId.toLowerCase().includes("flatpak")
+                    onClicked: {
+                        killDataSource.connectSource("kcmshell6 flatpak_permissions --args " + aboutWindow.targetAppId);
+                    }
+                }
+
+                PlasmaComponents.Button {
+                    text: i18n("Force Quit")
+                    icon.name: "application-exit"
+                    visible: aboutWindow.targetAppPid !== ""
+                    onClicked: {
+                        if (cfg.forceQuitConfirm) {
+                            forceQuitWindow.targetAppName = aboutWindow.targetAppName;
+                            forceQuitWindow.targetAppPid = aboutWindow.targetAppPid;
+                            forceQuitWindow.visible = true;
+                            forceQuitWindow.requestActivate();
+                        } else {
+                            killDataSource.connectSource('sh -c "kill -15 ' + aboutWindow.targetAppPid + ' 2>/dev/null; sleep 1; kill -9 ' + aboutWindow.targetAppPid + ' 2>/dev/null"');
+                            aboutWindow.visible = false;
+                        }
+                    }
+                }
+
+                PlasmaComponents.Button {
+                    text: i18n("Dismiss")
+                    icon.name: "dialog-close"
+                    onClicked: aboutWindow.visible = false
+                }
             }
         }
     }

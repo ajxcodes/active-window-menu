@@ -27,10 +27,17 @@ MouseArea {
     }
     
     onClicked: function(event){
-        if(existsWindowActive && event.button === Qt.MiddleButton && cfg.closeAllowed) {
+        if(existsWindowActive && event.button === Qt.MiddleButton && cfg.middleClickAction === 0) {
             windowInfoLoader.item.requestClose();
-        } else if (existsWindowActive && event.button === Qt.LeftButton && cfg.leftClickMenu) {
-            root.macAppMenuPopup.open();
+        } else if (existsWindowActive && event.button === Qt.LeftButton) {
+            if (cfg.leftClickAction === 0) {
+                root.macAppMenuPopup.open();
+            } else if (cfg.leftClickAction === 1 && windowInfoLoader.item.activeTaskItem) {
+                // If it's 1 (Show App Window) and there's a task, maybe toggle it?
+                // Actually if it's already active, it is showing. So maybe do nothing or minimize. 
+                // Let's assume activating does it.
+                windowInfoLoader.item.activeTaskItem.requestToggleActive();
+            }
         } else if (event.button === Qt.RightButton) {
             event.accepted = false;
         }

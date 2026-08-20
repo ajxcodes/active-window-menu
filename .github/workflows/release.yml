@@ -27,12 +27,12 @@ jobs:
         run: |
           # Create a zip archive containing the required files
           # Exclude .git and any hidden files just in case
-          zip -r mac-title-menu-${{ env.VERSION }}.plasmoid contents/ metadata.json
+          zip -r active-window-menu-${{ env.VERSION }}.plasmoid contents/ metadata.json
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: mac-title-menu-${{ env.VERSION }}.plasmoid
+          files: active-window-menu-${{ env.VERSION }}.plasmoid
           name: Mac Title Menu ${{ env.VERSION }}
           generate_release_notes: true
         env:

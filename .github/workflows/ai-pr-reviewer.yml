@@ -133,7 +133,7 @@ jobs:
             ? JSON.stringify(unresolvedBotThreads, null, 2)
             : "No unresolved previous issues.";
 
-          const prompt = `You are Antigravity, an expert senior software engineer reviewing a pull request for mac-title-menu, a KDE Plasma global menu applet.
+          const prompt = `You are Antigravity, an expert senior software engineer reviewing a pull request for active-window-menu, a KDE Plasma global menu applet.
           
           Context & Current Standards:
           - Today's date is July 7, 2026.
@@ -257,7 +257,7 @@ jobs:
                    messages: [
                      {
                        role: 'system',
-                        content: "You are Antigravity, an expert senior software engineer reviewing a pull request for mac-title-menu, a KDE Plasma global menu applet.\n\nYou must respond with a SINGLE JSON object exactly matching this structure:\n{\n  \"summary\": \"...\",\n  \"confidenceLevel\": \"High | Medium | Low\",\n  \"confidenceExplanation\": \"...\",\n  \"resolvedThreads\": [\"id1\"],\n  \"comments\": [\n    { \"path\": \"...\", \"line\": 15, \"severity\": \"info\", \"body\": \"🤖 **Antigravity AI Suggestion**\\n\\n...\" }\n  ]\n}\n\nNote: every comment in \"comments\" must have a 'severity' property set to one of 'critical', 'warning', or 'info'. Do NOT suggest duplicate comments for issues that are already unresolved in the previous reviews."
+                        content: "You are Antigravity, an expert senior software engineer reviewing a pull request for active-window-menu, a KDE Plasma global menu applet.\n\nYou must respond with a SINGLE JSON object exactly matching this structure:\n{\n  \"summary\": \"...\",\n  \"confidenceLevel\": \"High | Medium | Low\",\n  \"confidenceExplanation\": \"...\",\n  \"resolvedThreads\": [\"id1\"],\n  \"comments\": [\n    { \"path\": \"...\", \"line\": 15, \"severity\": \"info\", \"body\": \"🤖 **Antigravity AI Suggestion**\\n\\n...\" }\n  ]\n}\n\nNote: every comment in \"comments\" must have a 'severity' property set to one of 'critical', 'warning', or 'info'. Do NOT suggest duplicate comments for issues that are already unresolved in the previous reviews."
                      },
                      {
                        role: 'user',

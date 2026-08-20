@@ -3,8 +3,24 @@ function clean(item) {
     else return item;
 }
 function match(pat, str) {
-    let rgx = new RegExp(clean(pat))
-    return rgx.test(str)
+    pat = clean(pat);
+    if (!pat || pat === ".*") return true;
+
+    if (cfg.subsAdvancedMode) {
+        try {
+            let rgx = new RegExp(pat);
+            return rgx.test(str);
+        } catch (e) {
+            console.log("Invalid regex pattern: " + pat);
+            return false;
+        }
+    }
+
+    // Strip common legacy regex characters so old configs don't break
+    pat = pat.replace(/\.\*/g, '').replace(/\^/g, '').replace(/\$/g, '');
+    if (!pat) return true;
+
+    return str.toLowerCase().includes(pat.toLowerCase());
 }
 
 function sub(str) {
