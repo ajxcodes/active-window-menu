@@ -22,7 +22,11 @@ def find_keywords(item_tuple, found_about, found_prefs, about_id, prefs_id, pref
             
         # Check for Preferences / Settings
         if not found_prefs:
-            exclusions = ["printer", "page", "shortcut", "toolbar", "notification", "event", "plugin", "extension"]
+            exclusions = [
+                "printer", "page", "shortcut", "toolbar", "notification", "event", 
+                "plugin", "extension", "language", "3d", "profile", "account", 
+                "spell", "view"
+            ]
             if not any(excl in clean_label for excl in exclusions):
                 if ("preferences" in clean_label or 
                     "settings" in clean_label or 
