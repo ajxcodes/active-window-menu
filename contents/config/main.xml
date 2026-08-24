@@ -38,6 +38,7 @@
         <entry name="maxminAllowed"     type="Bool"><default>true</default></entry>
         <entry name="scrollAllowed"     type="Bool"><default>true</default></entry>
         <entry name="forceQuitConfirm"  type="Bool"><default>true</default></entry>
+        <entry name="showPrefsItem"     type="Bool"><default>true</default></entry>
         </group>
 
     <group name="Substitutions">

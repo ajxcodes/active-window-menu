@@ -225,7 +225,7 @@ PlasmoidItem {
         
         PlasmaExtras.MenuItem {
             text: i18n("%1...", root.currentAppPrefsLabel)
-            visible: root.currentAppHasPrefs
+            visible: root.currentAppHasPrefs && cfg.showPrefsItem
             onClicked: Qt.callLater(function(){
                 var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
                 var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";

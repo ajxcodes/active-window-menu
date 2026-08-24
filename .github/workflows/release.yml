@@ -33,7 +33,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: active-window-menu-${{ env.VERSION }}.plasmoid
-          name: Mac Title Menu ${{ env.VERSION }}
+          name: Active Window Menu ${{ env.VERSION }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

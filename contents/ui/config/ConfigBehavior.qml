@@ -14,6 +14,7 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_maxminAllowed: maxminAllowed.checked
     readonly property alias cfg_scrollAllowed: scrollAllowed.checked
     readonly property alias cfg_forceQuitConfirm: forceQuitConfirm.checked
+    readonly property alias cfg_showPrefsItem: showPrefsItemChk.checked
     readonly property alias cfg_leftClickAction: leftClickAction.currentIndex
     readonly property alias cfg_middleClickAction: middleClickAction.currentIndex
 
@@ -84,6 +85,11 @@ Kirigami.ScrollablePage {
         PC3.Switch {
             id: forceQuitConfirm
             Kirigami.FormData.label: i18n("Confirm Force Quit:")
+        }
+
+        PC3.Switch {
+            id: showPrefsItemChk
+            Kirigami.FormData.label: i18n("Show App Settings/Preferences menu item:")
         }
     }
 }
