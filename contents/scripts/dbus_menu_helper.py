@@ -3,6 +3,12 @@ import sys
 import dbus
 import json
 
+MENU_EXCLUSIONS = [
+    "printer", "page", "shortcut", "toolbar", "notification", "event", 
+    "plugin", "extension", "language", "3d", "profile", "account", 
+    "spell", "view"
+]
+
 def find_keywords(item_tuple, found_about, found_prefs, about_id, prefs_id, prefs_label):
     item_id, properties, children = item_tuple
     
@@ -22,12 +28,7 @@ def find_keywords(item_tuple, found_about, found_prefs, about_id, prefs_id, pref
             
         # Check for Preferences / Settings
         if not found_prefs:
-            exclusions = [
-                "printer", "page", "shortcut", "toolbar", "notification", "event", 
-                "plugin", "extension", "language", "3d", "profile", "account", 
-                "spell", "view"
-            ]
-            if not any(excl in clean_label for excl in exclusions):
+            if not any(excl in clean_label for excl in MENU_EXCLUSIONS):
                 if ("preferences" in clean_label or 
                     "settings" in clean_label or 
                     "options" in clean_label or 
