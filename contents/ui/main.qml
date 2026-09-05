@@ -83,7 +83,7 @@ PlasmoidItem {
                 var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
                 var cmd = 'python3 ' + scriptPath + ' check ' + service + ' ' + path;
                 if (appName !== "") {
-                    cmd += ' "' + appName.replace(/"/g, '\\"') + '"';
+                    cmd += " '" + appName.replace(/'/g, "'\\''") + "'";
                 }
                 dbusMenuCheckSource.connectSource(cmd);
             }

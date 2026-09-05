@@ -222,7 +222,8 @@ def main():
             }))
             sys.exit(0)
             
-    except Exception:
+    except Exception as e:
+        sys.stderr.write(f"dbus_menu_helper error: {e}\n")
         if action == "check":
             print(json.dumps({"has_about": False, "about_id": None, "has_prefs": False, "prefs_id": None, "prefs_label": "Preferences"}))
         else:
