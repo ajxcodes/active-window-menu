@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Effects
 import org.kde.plasma.core as PlasmaCore
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PlasmaComponents
@@ -65,6 +66,10 @@ Item {
                         cfg_activityIcon?"activities":cfg_customIcon
                     readonly property int thickMargin: cfg_fillThickness ? 0 : (parent.thickness - iconSize) / 2
                     readonly property int iconSize   : cfg_fillThickness ? parent.thickness : Math.min(parent.thickness, cfg_customSize)
+                    layer.enabled: Boolean(typeof cfg_monochromeIcon !== "undefined" && cfg_monochromeIcon)
+                    layer.effect: MultiEffect {
+                        saturation: -1.0
+                    }
                 }
             }
             Item{

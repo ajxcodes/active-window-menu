@@ -25,6 +25,7 @@
         <entry name="isItalic"      type="Bool"><default>false</default></entry>
         <entry name="isCaps"        type="Bool"><default>false</default></entry>
         <entry name="visible"       type="Bool"><default>true</default></entry>
+        <entry name="monochromeIcon" type="Bool"><default>false</default></entry>
         <entry name="fillThickness" type="Bool"><default>false</default></entry>
         <entry name="noIcon"        type="Bool"><default>true</default></entry>
         <entry name="activityIcon"  type="Bool"><default>true</default></entry>
