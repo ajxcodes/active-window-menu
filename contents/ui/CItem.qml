@@ -8,6 +8,8 @@ Item {
     Layout.maximumWidth:  isVertical?parent.width :length
     Layout.minimumHeight:!isVertical?parent.height:length
     Layout.maximumHeight:!isVertical?parent.height:length
+    Layout.fillHeight:   !isVertical
+    Layout.fillWidth:    isVertical
     /*Rectangle{
         color: "green"
         anchors.fill: parent

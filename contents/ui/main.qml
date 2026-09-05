@@ -186,8 +186,10 @@ PlasmoidItem {
         prefix: {
             if (root.macAppMenuPopup.status === PlasmaExtras.Menu.Open || root.itemPressed) {
                 return "pressed";
-            } else {
+            } else if (root.itemHovered) {
                 return "hover";
+            } else {
+                return "normal";
             }
         }
     }

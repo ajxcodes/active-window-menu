@@ -22,6 +22,8 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_isItalic: italicChk.checked
     readonly property alias cfg_isCaps: capsChk.checked
     readonly property alias cfg_fontSize: fontSize.value
+    readonly property alias cfg_useSystemFontSize: useSystemFontSizeChk.checked
+    readonly property alias cfg_verticalOffset: verticalOffset.value
     readonly property alias cfg_visible: iconChk.checked
     readonly property alias cfg_lengthKind: lengthKind.currentIndex
     readonly property alias cfg_fixedLength: fixedLength.value
@@ -99,6 +101,7 @@ Kirigami.ScrollablePage {
                     id: fontSize
                     from: 8
                     to: 64
+                    enabled: !useSystemFontSizeChk.checked
                 }
                 PC3.ToolButton{
                     id: boldChk
@@ -123,6 +126,26 @@ Kirigami.ScrollablePage {
                     display: AbstractButton.IconOnly
                     height: Kirigami.Units.smallSpacing
                     PC3.ToolTip{ text: i18n("<b>C</b>apitalize") }
+                }
+            }
+
+            PC3.CheckBox {
+                id: useSystemFontSizeChk
+                Kirigami.FormData.label: i18n("System Font Size:")
+                text: i18n("Match Plasma system font size")
+            }
+
+            PC3.SpinBox {
+                id: verticalOffset
+                Kirigami.FormData.label: i18n("Vertical Offset:")
+                from: -50
+                to: 50
+                stepSize: 1
+                textFromValue: function(value, locale) {
+                    return value > 0 ? "+" + value + " px" : value + " px";
+                }
+                valueFromText: function(text, locale) {
+                    return parseInt(text) || 0;
                 }
             }
 
