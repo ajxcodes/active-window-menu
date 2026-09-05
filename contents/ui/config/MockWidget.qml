@@ -75,7 +75,7 @@ Item {
                 id: txt
                 text                    : active
                 ? cfg_txt.replace("%a","Kate").replace("%w","main.qml").replace("%q","Default")
-                : cfg_altTxt.replace("%q","ActivityName")
+                : ((typeof cfg_onlyShowInactiveWithMultipleActivities !== "undefined" && cfg_onlyShowInactiveWithMultipleActivities) ? "" : cfg_altTxt.replace("%q","ActivityName"))
                 color                   : Kirigami.Theme.textColor
                 verticalAlignment       : Text.AlignVCenter
                 elide                   : Tools.getElide(cfg_elidePos)

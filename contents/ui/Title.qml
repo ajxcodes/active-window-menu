@@ -26,7 +26,7 @@ GridLayout {
         Layout.minimumHeight  : isVertical  ? width : parent.height
         Layout.maximumWidth   : Layout.minimumWidth
         Layout.maximumHeight  : Layout.minimumHeight
-        visible               : cfg.visible
+        visible               : cfg.visible && root.icon !== ""
         property int thickness: isVertical ? parent.width : parent.height
         Kirigami.Icon {
             anchors {
