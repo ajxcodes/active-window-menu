@@ -80,11 +80,12 @@ Item {
                 verticalAlignment       : Text.AlignVCenter
                 elide                   : Tools.getElide(cfg_elidePos)
                 width                   : cfg_lengthKind>0?cfg_fixedLength:implicitWidth
+                transform               : Translate { y: typeof cfg_verticalOffset !== "undefined" ? cfg_verticalOffset : 0 }
                 font {
                     capitalization      : cfg_isCaps
                     bold                : cfg_isBold
                     italic              : cfg_isItalic
-                    pixelSize           : cfg_fontSize
+                    pixelSize           : (typeof cfg_useSystemFontSize !== "undefined" && cfg_useSystemFontSize) ? Kirigami.Theme.defaultFont.pixelSize : cfg_fontSize
                 }
             }
             Item{

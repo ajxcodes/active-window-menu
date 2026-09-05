@@ -63,11 +63,13 @@ GridLayout {
             }
             rotation                : isVertical?plasmoid.location===PlasmaCore.Types.LeftEdge?-90:90:0
             anchors.centerIn        : parent
+            anchors.verticalCenterOffset: !isVertical ? (cfg.verticalOffset ?? 0) : 0
+            anchors.horizontalCenterOffset: isVertical ? (plasmoid.location === PlasmaCore.Types.LeftEdge ? -(cfg.verticalOffset ?? 0) : (cfg.verticalOffset ?? 0)) : 0
             font {
                 capitalization      : cfg.isCaps ? Font.Capitalize : Font.MixedCase
                 bold                : cfg.isBold
                 italic              : cfg.isItalic
-                pixelSize           : cfg.fontSize
+                pixelSize           : (cfg.useSystemFontSize ?? false) ? Kirigami.Theme.defaultFont.pixelSize : cfg.fontSize
             }
         }
     }
