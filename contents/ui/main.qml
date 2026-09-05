@@ -72,6 +72,7 @@ PlasmoidItem {
         
         var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
         var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";
+        var appName = root.activeTaskItem ? (root.activeTaskItem.appName || "") : "";
         var cacheKey = service + "|" + path;
         
         if (service !== "" && path !== "") {
@@ -80,7 +81,11 @@ PlasmoidItem {
                 root.currentAppPrefsLabel = menuCapabilitiesCache[cacheKey].prefs_label;
             } else {
                 var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
-                dbusMenuCheckSource.connectSource('python3 ' + scriptPath + ' check ' + service + ' ' + path);
+                var cmd = 'python3 ' + scriptPath + ' check ' + service + ' ' + path;
+                if (appName !== "") {
+                    cmd += ' "' + appName.replace(/"/g, '\\"') + '"';
+                }
+                dbusMenuCheckSource.connectSource(cmd);
             }
         }
     }
@@ -204,12 +209,18 @@ PlasmoidItem {
             onClicked: Qt.callLater(function(){
                 var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
                 var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";
+                var cacheKey = service + "|" + path;
+                var cached = root.menuCapabilitiesCache[cacheKey];
                 
                 if (service !== "" && path !== "") {
                     // Try using the DBus Python Script
                     // Note: plasmoid.file is avoided here because it can fail to resolve during plasmoid updates.
                     var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
-                    dbusTriggerSource.connectSource('python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' about');
+                    var cmd = 'python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' about';
+                    if (cached && cached.about_id !== null && cached.about_id !== undefined) {
+                        cmd += ' ' + cached.about_id;
+                    }
+                    dbusTriggerSource.connectSource(cmd);
                 } else {
                     // Fallback instantly if no DBus AppMenu is available
                     aboutWindow.targetAppName = root.activeTaskItem ? root.activeTaskItem.appName : "Mac Title Menu";
@@ -229,9 +240,15 @@ PlasmoidItem {
             onClicked: Qt.callLater(function(){
                 var service = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuServiceName : "";
                 var path = root.activeTaskItem ? root.activeTaskItem.dbusAppMenuObjectPath : "";
+                var cacheKey = service + "|" + path;
+                var cached = root.menuCapabilitiesCache[cacheKey];
                 if (service !== "" && path !== "") {
                     var scriptPath = Qt.resolvedUrl("../scripts/dbus_menu_helper.py").toString().replace("file://", "");
-                    dbusTriggerSource.connectSource('python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' prefs');
+                    var cmd = 'python3 ' + scriptPath + ' trigger ' + service + ' ' + path + ' prefs';
+                    if (cached && cached.prefs_id !== null && cached.prefs_id !== undefined) {
+                        cmd += ' ' + cached.prefs_id;
+                    }
+                    dbusTriggerSource.connectSource(cmd);
                 }
             })
         }
@@ -364,13 +381,17 @@ PlasmoidItem {
                 try {
                     var parsed = JSON.parse(output);
                     var parts = sourceName.split(' ');
-                    var service = parts[parts.length - 2];
-                    var path = parts[parts.length - 1];
+                    var checkIdx = parts.indexOf("check");
+                    var service = (checkIdx !== -1 && parts.length > checkIdx + 1) ? parts[checkIdx + 1] : "";
+                    var path = (checkIdx !== -1 && parts.length > checkIdx + 2) ? parts[checkIdx + 2] : "";
                     var cacheKey = service + "|" + path;
                     
                     root.menuCapabilitiesCache[cacheKey] = {
                         has_prefs: parsed.has_prefs === true,
-                        prefs_label: parsed.prefs_label || "Preferences"
+                        prefs_label: parsed.prefs_label || "Preferences",
+                        prefs_id: (parsed.prefs_id !== undefined && parsed.prefs_id !== null) ? parsed.prefs_id : null,
+                        has_about: parsed.has_about === true,
+                        about_id: (parsed.about_id !== undefined && parsed.about_id !== null) ? parsed.about_id : null
                     };
                     
                     // If this is still the active window, apply it immediately
