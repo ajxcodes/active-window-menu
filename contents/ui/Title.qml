@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Effects
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.components as PlasmaComponents
 import org.kde.plasma.core as PlasmaCore
@@ -39,6 +40,10 @@ GridLayout {
             source: root.icon
             readonly property int thickMargin: cfg.fillThickness ? 0 : (parent.thickness - iconSize) / 2
             readonly property int iconSize   : cfg.fillThickness ? parent.thickness : Math.min(parent.thickness, cfg.customSize)
+            layer.enabled: Boolean(cfg && cfg.monochromeIcon)
+            layer.effect: MultiEffect {
+                saturation: -1.0
+            }
         }
     }
     CItem {length: cfg.midSpace}

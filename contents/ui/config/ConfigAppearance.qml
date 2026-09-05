@@ -26,6 +26,7 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_useSystemFontSize: useSystemFontSizeChk.checked
     readonly property alias cfg_verticalOffset: verticalOffset.value
     readonly property alias cfg_visible: iconChk.checked
+    readonly property alias cfg_monochromeIcon: monochromeIconChk.checked
     readonly property alias cfg_lengthKind: lengthKind.currentIndex
     readonly property alias cfg_fixedLength: fixedLength.value
     readonly property alias cfg_fillThickness: fillThickness.checked
@@ -164,12 +165,18 @@ Kirigami.ScrollablePage {
 
             Item {
                 Kirigami.FormData.isSection: true
-                Kirigami.FormData.label: i18n("Icon Visibility")
+                Kirigami.FormData.label: i18n("Icon")
             }
 
             PC3.Switch {
                 id: iconChk
                 Kirigami.FormData.label: i18n("Show Icon:")
+            }
+
+            PC3.Switch {
+                id: monochromeIconChk
+                Kirigami.FormData.label: i18n("Monochrome Icon:")
+                enabled: iconChk.checked
             }
 
             RowLayout {
