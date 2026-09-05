@@ -27,13 +27,14 @@
         "Category": "Windows and Tasks",
         "Description": "Shows the application title and icon of the active window with a Mac-like context menu",
         "Donors": [
-            "https://github.com/sponsors/ajxcodes"
+            "https://github.com/sponsors/ajxcodes",
+            "https://ko-fi.com/ajxcodes"
         ],
         "Icon": "preferences-desktop",
         "Id": "com.ajxcodes.active-window-menu",
         "License": "GPLv2",
         "Name": "Active Window Menu",
-        "Version": "v1.01.0",
+        "Version": "v1.02.0",
         "Website": "https://github.com/ajxcodes/active-window-menu"
     },
     "Keyword": "window title icon mac menu",

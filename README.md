@@ -6,14 +6,19 @@
   <a href="https://store.kde.org/p/2362989/">
     <img src="https://img.shields.io/badge/KDE_Store-Install-0072C6?logo=kde&logoColor=white&style=for-the-badge" alt="Install from KDE Store">
   </a>
+  <a href="https://ko-fi.com/ajxcodes">
+    <img src="https://img.shields.io/badge/Ko--fi-Support-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge" alt="Support on Ko-fi">
+  </a>
 </p>
 
 A Mac-like window title and context menu applet built natively for KDE Plasma 6.
 
 ## Features
 - **Mac-Style App Menu**: Left-click the active window's title in the panel to open a native context menu with window management actions (Minimize, Maximize, Close, Keep Above, etc.).
+- **Smart App Menu Heuristics**: Dynamically traverses D-Bus AppMenu trees with candidate scoring to expose application-specific "Preferences/Settings" and "About" actions directly in the menu.
 - **Native Plasma 6 Architecture**: Built on `PlasmaExtras.Menu` to ensure robust Wayland support, focus management, and flawless C++ backend integration.
-- **Pixel-Perfect Aesthetic**: Mathematically centered layouts and 2px tight vertical panel margins seamlessly mirror the native Plasma 6 Global Menu button contour and styling.
+- **Pixel-Perfect Aesthetic & Alignment**: Mathematically centered layouts, 2px tight vertical panel margins, fine-grained vertical text offset, and system font size matching.
+- **Monochrome & Inactive Display Options**: Toggle monochrome symbolic icons to match panel styling, and optionally hide inactive window text on single-activity setups.
 - **Dynamic Substitutions**: Highly customizable text display using variables like `%a` (App Name) and `%w` (Window Title).
 
 ## Credits & Acknowledgments
@@ -70,14 +75,14 @@ You can easily install this directly through your Plasma Desktop:
 3. Search for **Active Window Menu** and hit install!
 
 Alternatively, if you are viewing this on a system with KDE Discover installed, you can use an AppStream link (if you have your store ID):
-[Install via Discover](appstream://com.ajxcodes.macappmenu) or [View on KDE Store](https://store.kde.org/p/2362989/)
+[Install via Discover](appstream://com.ajxcodes.active-window-menu) or [View on KDE Store](https://store.kde.org/p/2362989/)
 
 ### Manual Installation
 If you've cloned this repository, you can easily install and test it using the provided script:
 ```bash
 ./install.sh
 ```
-*Note: This script copies the contents to `~/.local/share/plasma/plasmoids/com.ajxcodes.macappmenu` and automatically restarts the Plasma shell.*
+*Note: This script copies the contents to `~/.local/share/plasma/plasmoids/com.ajxcodes.active-window-menu` and automatically restarts the Plasma shell.*
 
 Alternatively, you can build and install it using Plasma's native package tool:
 ```bash

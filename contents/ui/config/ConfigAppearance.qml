@@ -18,11 +18,15 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_lastSpace: lastSpace.value
     readonly property alias cfg_txt: txt.text
     readonly property alias cfg_altTxt: altTxt.text
+    readonly property alias cfg_onlyShowInactiveWithMultipleActivities: onlyShowInactiveWithMultipleActivitiesChk.checked
     readonly property alias cfg_isBold: boldChk.checked
     readonly property alias cfg_isItalic: italicChk.checked
     readonly property alias cfg_isCaps: capsChk.checked
     readonly property alias cfg_fontSize: fontSize.value
+    readonly property alias cfg_useSystemFontSize: useSystemFontSizeChk.checked
+    readonly property alias cfg_verticalOffset: verticalOffset.value
     readonly property alias cfg_visible: iconChk.checked
+    readonly property alias cfg_monochromeIcon: monochromeIconChk.checked
     readonly property alias cfg_lengthKind: lengthKind.currentIndex
     readonly property alias cfg_fixedLength: fixedLength.value
     readonly property alias cfg_fillThickness: fillThickness.checked
@@ -93,12 +97,18 @@ Kirigami.ScrollablePage {
                 Kirigami.FormData.label: i18n("Inactive Window Text:")
             }
 
+            PC3.CheckBox {
+                id: onlyShowInactiveWithMultipleActivitiesChk
+                text: i18n("Only show when more than one activity is running")
+            }
+
             RowLayout {
                 Kirigami.FormData.label: i18n("Text Formatting:")
                 PC3.SpinBox{
                     id: fontSize
                     from: 8
                     to: 64
+                    enabled: !useSystemFontSizeChk.checked
                 }
                 PC3.ToolButton{
                     id: boldChk
@@ -126,6 +136,26 @@ Kirigami.ScrollablePage {
                 }
             }
 
+            PC3.CheckBox {
+                id: useSystemFontSizeChk
+                Kirigami.FormData.label: i18n("System Font Size:")
+                text: i18n("Match Plasma system font size")
+            }
+
+            PC3.SpinBox {
+                id: verticalOffset
+                Kirigami.FormData.label: i18n("Vertical Offset:")
+                from: -50
+                to: 50
+                stepSize: 1
+                textFromValue: function(value, locale) {
+                    return value > 0 ? "+" + value + " px" : value + " px";
+                }
+                valueFromText: function(text, locale) {
+                    return parseInt(text) || 0;
+                }
+            }
+
             PC3.ComboBox {
                 id: elidePos
                 Kirigami.FormData.label: i18n("Elide Position:")
@@ -135,12 +165,18 @@ Kirigami.ScrollablePage {
 
             Item {
                 Kirigami.FormData.isSection: true
-                Kirigami.FormData.label: i18n("Icon Visibility")
+                Kirigami.FormData.label: i18n("Icon")
             }
 
             PC3.Switch {
                 id: iconChk
                 Kirigami.FormData.label: i18n("Show Icon:")
+            }
+
+            PC3.Switch {
+                id: monochromeIconChk
+                Kirigami.FormData.label: i18n("Monochrome Icon:")
+                enabled: iconChk.checked
             }
 
             RowLayout {

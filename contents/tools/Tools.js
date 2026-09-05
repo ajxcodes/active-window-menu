@@ -49,7 +49,15 @@ function substitute() {
     return sub(text)
 }
 function altSubstitute() {
-    return cfg.altTxt.replace("%q", fullActivityInfo.name)
+    if (cfg.onlyShowInactiveWithMultipleActivities) {
+        const count = (typeof activityInfo !== "undefined" && activityInfo?.numberOfRunningActivities !== undefined)
+            ? activityInfo.numberOfRunningActivities
+            : 1;
+        if (count <= 1) {
+            return "";
+        }
+    }
+    return cfg.altTxt.replace("%q", fullActivityInfo?.name ?? "");
 }
 function getText() {
     if (isActiveWindowMaximized) return Tools.substitute()
