@@ -18,6 +18,7 @@ Kirigami.ScrollablePage {
     readonly property alias cfg_lastSpace: lastSpace.value
     readonly property alias cfg_txt: txt.text
     readonly property alias cfg_altTxt: altTxt.text
+    readonly property alias cfg_onlyShowInactiveWithMultipleActivities: onlyShowInactiveWithMultipleActivitiesChk.checked
     readonly property alias cfg_isBold: boldChk.checked
     readonly property alias cfg_isItalic: italicChk.checked
     readonly property alias cfg_isCaps: capsChk.checked
@@ -93,6 +94,11 @@ Kirigami.ScrollablePage {
             PC3.TextField {
                 id: altTxt
                 Kirigami.FormData.label: i18n("Inactive Window Text:")
+            }
+
+            PC3.CheckBox {
+                id: onlyShowInactiveWithMultipleActivitiesChk
+                text: i18n("Only show when more than one activity is running")
             }
 
             RowLayout {
